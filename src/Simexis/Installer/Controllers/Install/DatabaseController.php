@@ -39,7 +39,7 @@ class DatabaseController extends Controller {
 		$response = $manager->migrateAndSeed();
 		if($response['status'] == 'danger')
 			return redirect(route('installer::database'))
-                        ->with($response)
+                        ->withErrors(['message' => $response['message']])
                         ->withInput();
 						
 		$installer = app('installer');
