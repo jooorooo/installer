@@ -21,48 +21,40 @@
 			</div>
 		</div>
 		@endif
-		{!! Form::open(['route' => 'installer::database', 'method' => 'post']) !!}
+		<form action="{{ route('installer::database') }}" method="post">
+			<input type="hidden" name="_token" value="{{ csrf_token() }}">
 			<div class="panel-group">
 				<div class="panel-body">
 					<div class="row">
 						<div class="form-group col-md-12">
-							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.host')) !!}</div>
-							<div class="col-md-10">{!! Form::text("host", old('host', 'localhost'), [
-															'class'=>'form-control',
-															'placeholder'=> Lang::get('installer::installer.database.host') ]) !!}</div>
+							<div class="col-md-2"><label>@lang('installer::installer.database.host')</label></div>
+							<div class="col-md-10"><input type="text" name="host" value="{{ old('host', 'localhost') }}" class="form-control" placeholder="@lang('installer::installer.database.host')"></div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
-							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.database')) !!}</div>
-							<div class="col-md-10">{!! Form::text("database", old('database'), [
-															'class'=>'form-control',
-															'placeholder'=> Lang::get('installer::installer.database.database') ]) !!}</div>
+							<div class="col-md-2"><label>@lang('installer::installer.database.database')</label></div>
+							<div class="col-md-10"><input type="text" name="database" value="{{ old('database') }}" class="form-control" placeholder="@lang('installer::installer.database.database')"></div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
-							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.username')) !!}</div>
-							<div class="col-md-10">{!! Form::text("username", old('username'), [
-															'class'=>'form-control',
-															'placeholder'=> Lang::get('installer::installer.database.username') ]) !!}</div>
+							<div class="col-md-2"><label>@lang('installer::installer.database.username')</label></div>
+							<div class="col-md-10"><input type="text" name="username" value="{{ old('username') }}" class="form-control" placeholder="@lang('installer::installer.database.username')"></div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
-							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.password')) !!}</div>
-							<div class="col-md-10">{!! Form::text("password", old('password'), [
-															'class'=>'form-control',
-															'placeholder'=> Lang::get('installer::installer.database.password') ]) !!}</div>
+							<div class="col-md-2"><label>@lang('installer::installer.database.password')</label></div>
+							<div class="col-md-10"><input type="text" name="password" value="{{ old('password') }}" class="form-control" placeholder="@lang('installer::installer.database.password')"></div>
 						</div>
-					</div>
-					
+					</div>					
 				</div>
 			</div>
 			<button class="btn btn-success" type="submit">
 				@lang('installer::installer.next')
 			</button>
-			{!! Form::close() !!}
+			</form>
         </div>
     </div>
 @stop

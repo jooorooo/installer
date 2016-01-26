@@ -22,9 +22,6 @@ class InstallerServiceProvider extends ServiceProvider {
 	 */
     public function register()
     { 
-		$loader = AliasLoader::getInstance();
-		$loader->alias('Form', \Illuminate\Html\FormFacade::class);
-		
 		$this->registerProvider();
     }
 
@@ -77,14 +74,11 @@ class InstallerServiceProvider extends ServiceProvider {
 	 */
 	private function registerProvider() {
 		
-		$html = new \Illuminate\Html\HtmlServiceProvider($this->app);
-		$html->register();
-		
-		$this->app->bindShared('installer', function ($app) {
+		$this->app->singleton('installer', function ($app) {
             return new Installer($app);
         });
 		
-		$this->app->bindShared('Simexis\Installer\Helpers\Render', function ($app) {
+		$this->app->singleton('Simexis\Installer\Helpers\Render', function ($app) {
             return new Render($app);
         });
 	}
