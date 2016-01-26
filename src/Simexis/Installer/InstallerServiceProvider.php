@@ -112,10 +112,10 @@ class InstallerServiceProvider extends ServiceProvider {
 		$filemanager = $this->app['installer']->getFileManager();
 		include_once __DIR__ . '/Routes/routes.php';
 		if(($install = $filemanager->isInstalled()) !== false ? $filemanager->isUpdatable() : true) {
-			if(!$this->app['request']->is('Installer@*'))
-				$this->app['events']->listen('router.before', function($request, $response) use($install) {
-					return redirect()->route(!$install ? 'installer::welcome' : 'installer::upgrade');
-				});
+			if(!$this->app['request']->is('Installer@*')) {
+				header('location:' . route(!$install ? 'installer::welcome' : 'installer::upgrade'));
+				exit;
+			}
 		}
 	}
 
