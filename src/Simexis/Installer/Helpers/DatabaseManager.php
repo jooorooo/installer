@@ -14,29 +14,6 @@ use Illuminate\Contracts\Foundation\Application;
 
 class DatabaseManager {
 	
-    /**
-     * Check for the server requirements.
-     *
-     * @return array
-     */
-    public function connections()
-    {
-        $results = [];
-		$connections = config('database.connections');
-		if(!is_array($connections))
-			$connections = [];
-		
-        foreach($connections as $connection)
-        {
-			if(!in_array($connection['driver'], ['sqlite', 'mysql', 'pgsql', 'sqlsrv']))
-				continue;
-			$connection['default'] = Input::old('driver', config('database.default'));
-            $results[$connection['driver']] = $connection;
-        }
-		
-        return $results;
-    }
-	
 	/*
 	 * @param \Illuminate\Contracts\Foundation\Application $app
 	 * @param \Simexis\Installer\Request\DatabaseRequest $request
@@ -44,14 +21,24 @@ class DatabaseManager {
 	 * @return string
 	 */
 	public function setConfig(Application $app, DatabaseRequest $request) {
-		$driver = $request->get('driver');
-		$connections = $this->connections();
-		$config = array_merge( $connections[$driver], $request->get($driver) );
-		if(isset($config['default']))
-			unset($config['default']);
+		$db = $app['config']->get('database');
+		if(!$db)
+			return false;
+		$driver = $db['default'];
+		$post_data = [
+			'connections' => [
+					$driver => [
+						'host' => $request->get('host'),
+						'database' => $request->get('database'),
+						'username' => $request->get('username'),
+						'password' => $request->get('password')
+					]
+				]
+			];
+			
 		$config = array_merge(
-			Arr::dot($app['config']->get('database')), 
-			Arr::dot(['default' => $driver, 'connections' => [$driver => $config]])
+			Arr::dot($db), 
+			Arr::dot($post_data)
 		);
 		
 		$a = [];
@@ -62,17 +49,41 @@ class DatabaseManager {
 		return $driver;
 	}
 	
-	public function writeConfig() {
-		$config = app('config');
-		$template = preg_replace_callback('~\'\{\{([^\}]*)\}\}\'~i',function($match) use($config) {
-			if('CONNECTIONS_SQLITE_DATABASE' == $match[1]) 
-				return 'database_path(\'' . md5(env('APP_KEY', 'database')) . '.sqlite\')';
-			return var_export($config->get($this->formateKey($match[1])), true);
-		}, $this->getConfigTemplate());
+	public function parseEnv($path) {
+		if(!file_exists($path) || !is_file($path))
+			return [];
+		$lines = array_map('trim', file($path));
+		$result = [];
+		foreach($lines AS $row => $line) {
+			$parts = explode('=', $line, 2);
+			$result[$parts[0] ? : $row] = isset($parts[1]) ? $parts[1] : '';
+		}
+		return $result;
+	}
+	
+	public function writeConfig(Application $app, DatabaseRequest $request) {
+		$lines = $this->parseEnv(base_path('.env'));
+		$data = [
+			$this->formateKey('host') 		=> $request->get('host'),
+			$this->formateKey('database') 	=> $request->get('database'),
+			$this->formateKey('username') 	=> $request->get('username'),
+			$this->formateKey('password') 	=> $request->get('password')
+		];
 		
-		$dbFile = base_path('config/database.php');
-		if(!@file_put_contents($dbFile, $template))
+		$lines = array_merge($lines, $data);
+		
+		$fp = @fopen(base_path('.env'), 'w+');
+		if(!$fp)
 			throw new Exception(Lang::get('installer::installer.database.error_db_write'));
+		
+		foreach($lines AS $key => $data) {
+			if(is_int($key)) {
+				fwrite($fp, implode('',["\n"]));
+			} else {
+				fwrite($fp, implode('',[$key,'=',$data,"\n"]));
+			}
+		}
+		fclose($fp);
 		return true;
 	}
     /**
@@ -177,19 +188,6 @@ class DatabaseManager {
             'message' => $message
         );
     }
-	
-    /**
-     * Return database configuration template
-     *
-     * @throw Exception
-     * @return array
-     */
-	private function getConfigTemplate() {
-		$file = dirname(__DIR__) . '/templates/database.php';
-		if(is_file($file))
-			return file_get_contents($file);
-		throw new Exception(Lang::get('installer::installer.database.error_db_template'));
-	}
 
 	
     /**
@@ -199,6 +197,6 @@ class DatabaseManager {
      * @return string
      */
 	private function formateKey($key) {
-		return implode('.', ['database', strtolower(str_replace('_', '.', $key))]);
+		return implode('_', ['DB', strtoupper($key)]);
 	}
 }

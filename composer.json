@@ -1,6 +1,6 @@
 {
     "name": "simexis/installer",
-    "description": "Installer for laravel 5.x",
+    "description": "Installer for laravel 5.0.x and 5.1.x",
     "license": "MIT",
     "authors": [
         {
@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-		"illuminate/support": ">=5.0.0",
+		"illuminate/support": ">=5.0.0,<5.2",
         "illuminate/html": ">=5.0.0"
     },
     "autoload": {

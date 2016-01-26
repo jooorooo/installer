@@ -36,10 +36,8 @@ return [
 		'database' => 'Database',
 		'username' => 'Username',
 		'password' => 'Password',
-		'prefix' => 'Table Prefix',
 		'error' => 'Unable to set installed status.',
-		'error_db_template' => 'Missing configuration template!',
-		'error_db_write' => 'Missing configuration template!',
+		'error_db_write' => 'Unable to write file ".env"!',
     ],
 	
     /**

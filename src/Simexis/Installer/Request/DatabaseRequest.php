@@ -25,12 +25,11 @@ class DatabaseRequest extends FormRequest {
 	 */
 	public function rules()
 	{
-		$driver = Input::get('driver');
-		if(!in_array($driver, ['sqlite', 'mysql', 'pgsql', 'sqlsrv']))
-			return [
-				'drivername' => 'required'
-			];
-		return call_user_func([$this, '_' . ($driver == 'sqlite' ? 'simple' : 'extended') . 'Rules'], $driver);
+		return [
+			'host' => 'required',
+			'database' => 'required',
+			'username' => 'required',
+		];
 	}
 
     /**
@@ -38,43 +37,13 @@ class DatabaseRequest extends FormRequest {
      *
      * @return array
      */
-    public function messages()
+    public function attributes()
     {
-		$driver = Input::get('driver');
-		if(!in_array($driver, ['sqlite', 'mysql', 'pgsql', 'sqlsrv']))
-			return [
-				'drivername.required' => 'There is some error wit driver!'
-			];
-		return call_user_func([$this, '_' . ($driver == 'sqlite' ? 'simple' : 'extended') . 'Messages'], $driver);
+		return [
+			'host' => Lang::get('installer::installer.database.host'),
+			'database' => Lang::get('installer::installer.database.database'),
+			'username' => Lang::get('installer::installer.database.username'),
+		];
     }
-	
-	private function _simpleRules($driver) {
-		return [
-			$driver . '.prefix' => 'alpha_dash'
-		];
-	}
-	
-	private function _simpleMessages($driver) {
-		return [
-			$driver . '.prefix.alpha_dash' => 'Table Prefix may only contain letters, numbers, and dashes.'
-		];
-	}
-	
-	private function _extendedRules($driver) {
-		$rules = [
-			$driver . '.host' => 'required',
-			$driver . '.database' => 'required',
-			$driver . '.username' => 'required',
-		];
-		return array_merge($rules, $this->_simpleRules($driver));
-	}
-	
-	private function _extendedMessages($driver) {
-		$messages = [
-			$driver . '.host.required' => 'Host is required.',
-			$driver . '.database.required' => 'Database is required.',
-			$driver . '.username.required' => 'Username is required.',
-		];
-		return array_merge($messages, $this->_simpleMessages($driver));
-	}
+
 }

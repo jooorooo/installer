@@ -22,12 +22,42 @@
 		</div>
 		@endif
 		{!! Form::open(['route' => 'installer::database', 'method' => 'post']) !!}
-			<div class="panel-group" id="accordion">
-				@foreach($connections AS $connection)
-				<div class="panel panel-default">
-					@include('installer::install.database_driver.' . $connection['driver'], ['connection' => $connection])
+			<div class="panel-group">
+				<div class="panel-body">
+					<div class="row">
+						<div class="form-group col-md-12">
+							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.host')) !!}</div>
+							<div class="col-md-10">{!! Form::text("host", old('host', 'localhost'), [
+															'class'=>'form-control',
+															'placeholder'=> Lang::get('installer::installer.database.host') ]) !!}</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.database')) !!}</div>
+							<div class="col-md-10">{!! Form::text("database", old('database'), [
+															'class'=>'form-control',
+															'placeholder'=> Lang::get('installer::installer.database.database') ]) !!}</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.username')) !!}</div>
+							<div class="col-md-10">{!! Form::text("username", old('username'), [
+															'class'=>'form-control',
+															'placeholder'=> Lang::get('installer::installer.database.username') ]) !!}</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<div class="col-md-2">{!! Form::label(Lang::get('installer::installer.database.password')) !!}</div>
+							<div class="col-md-10">{!! Form::text("password", old('password'), [
+															'class'=>'form-control',
+															'placeholder'=> Lang::get('installer::installer.database.password') ]) !!}</div>
+						</div>
+					</div>
+					
 				</div>
-				@endforeach
 			</div>
 			<button class="btn btn-success" type="submit">
 				@lang('installer::installer.next')
@@ -35,16 +65,4 @@
 			{!! Form::close() !!}
         </div>
     </div>
-	<script type="text/javascript">
-	$('#accordion .panel-title a').on('click', function(){
-		var acc = $('#accordion')
-			.find('input[type=radio]')
-			.removeAttr('checked').end()
-			.find('.panel-title a')
-			.filter(this)
-			.closest('.panel')
-			.find('.panel-heading input[type=radio]')
-			.attr('checked', true);
-    });
-	</script>
 @stop

@@ -45,6 +45,6 @@ return [
         'storage/framework/',
         'storage/logs/',
         'bootstrap/cache/',
-        'config/database.php'
+        '.env'
     ]
 ];

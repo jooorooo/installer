@@ -12,8 +12,7 @@ use Illuminate\Contracts\Foundation\Application;
 class DatabaseController extends Controller {
 	
 	public function index(DatabaseManager $checker) {
-		$connections = $checker->connections();
-        return view('installer::install.database', compact('connections'));
+        return view('installer::install.database');
 	}
 	
 	public function post(Application $app, DatabaseRequest $request, DatabaseManager $manager) {
@@ -29,7 +28,7 @@ class DatabaseController extends Controller {
 		}
 		
 		try {
-			$manager->writeConfig();
+			$manager->writeConfig($app, $request);
 		} catch(\Exception $e) {
 			return redirect(route('installer::database'))
                         ->withErrors(['exception' => $e->getMessage()])
