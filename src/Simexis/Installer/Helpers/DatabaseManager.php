@@ -16,23 +16,18 @@ class DatabaseManager {
 	
 	/*
 	 * @param \Illuminate\Contracts\Foundation\Application $app
-	 * @param \Simexis\Installer\Request\DatabaseRequest $request
+	 * @param $data
 	 *
 	 * @return string
 	 */
-	public function setConfig(Application $app, DatabaseRequest $request) {
+	public function setConfig(Application $app, $data) {
 		$db = $app['config']->get('database');
 		if(!$db)
 			return false;
 		$driver = $db['default'];
 		$post_data = [
 			'connections' => [
-					$driver => [
-						'host' => $request->get('host'),
-						'database' => $request->get('database'),
-						'username' => $request->get('username'),
-						'password' => $request->get('password')
-					]
+					$driver => $data
 				]
 			];
 			
@@ -61,13 +56,13 @@ class DatabaseManager {
 		return $result;
 	}
 	
-	public function writeConfig(Application $app, DatabaseRequest $request) {
+	public function writeConfig(Application $app, $data) {
 		$lines = $this->parseEnv(base_path('.env'));
 		$data = [
-			$this->formateKey('host') 		=> $request->get('host'),
-			$this->formateKey('database') 	=> $request->get('database'),
-			$this->formateKey('username') 	=> $request->get('username'),
-			$this->formateKey('password') 	=> $request->get('password')
+			$this->formateKey('host') 		=> $data['host'],
+			$this->formateKey('database') 	=> $data['database'],
+			$this->formateKey('username') 	=> $data['username'],
+			$this->formateKey('password') 	=> $data['password']
 		];
 		
 		$lines = array_merge($lines, $data);

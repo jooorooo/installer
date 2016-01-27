@@ -17,7 +17,12 @@ class DatabaseController extends Controller {
 	
 	public function post(Application $app, DatabaseRequest $request, DatabaseManager $manager) {
 		
-		$driver = $manager->setConfig($app, $request);
+		$driver = $manager->setConfig($app, [
+						'host' => $request->get('host'),
+						'database' => $request->get('database'),
+						'username' => $request->get('username'),
+						'password' => $request->get('password')
+					]);
 		
 		try {
 			DB::connection($driver);
@@ -28,7 +33,12 @@ class DatabaseController extends Controller {
 		}
 		
 		try {
-			$manager->writeConfig($app, $request);
+			$manager->writeConfig($app, [
+						'host' => $request->get('host'),
+						'database' => $request->get('database'),
+						'username' => $request->get('username'),
+						'password' => $request->get('password')
+					]);
 		} catch(\Exception $e) {
 			return redirect(route('installer::database'))
                         ->withErrors(['exception' => $e->getMessage()])
