@@ -88,6 +88,7 @@ class DatabaseManager {
      */
     public function migrateAndSeed()
     {
+		Artisan::call('vendor:publish');
         return $this->migrate();
     }
 	
@@ -98,6 +99,7 @@ class DatabaseManager {
      */
     public function updateDatabaseAndSeedTables()
     {
+		Artisan::call('vendor:publish');
         return $this->updateDatabase();
     }
 	
