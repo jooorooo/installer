@@ -116,13 +116,13 @@ class InstallerServiceProvider extends ServiceProvider {
 	 */
 	private function registerIfNotInstalled() {
 		$filemanager = $this->app['installer']->getFileManager();
+		include_once __DIR__ . '/Routes/routes.php';
 		if(($install = $filemanager->isInstalled()) !== false ? $filemanager->isUpdatable() : true) {
 			if(App::runningInConsole()) {
 				if($this->allowCommand())
 					return;
 				exit('You must run command: php artisan ' . (!$install ? 'app:install' : 'app:upgrade'));
 			}
-			include_once __DIR__ . '/Routes/routes.php';
 			if(!$this->app['request']->is('Installer@*') && !$this->app['request']->is('*/Installer@*')) {
 				$this->redirectTo(route(!$install ? 'installer::welcome' : 'installer::upgrade'));
 			}

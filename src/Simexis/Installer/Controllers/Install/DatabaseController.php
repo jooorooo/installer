@@ -45,6 +45,11 @@ class DatabaseController extends Controller {
                         ->withInput();
 		}
 		
+		return redirect(route('installer::database_finish'));
+	}
+	
+	public function finish(Application $app, DatabaseManager $manager) {
+		
 		$response = $manager->migrateAndSeed();
 		if($response['status'] == 'danger')
 			return redirect(route('installer::database'))

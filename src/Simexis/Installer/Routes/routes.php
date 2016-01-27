@@ -22,6 +22,10 @@ Route::group($middleware + ['prefix' => 'Installer@install', 'namespace' => 'Sim
 			'as' => 'installer::database',
 			'uses' => 'DatabaseController@post'
 		]);
+		Route::get('database-finish', [
+			'as' => 'installer::database_finish',
+			'uses' => 'DatabaseController@finish'
+		]);
 	});
 	Route::get('finish', [
 		'as' => 'installer::finish',
