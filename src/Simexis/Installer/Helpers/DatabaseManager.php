@@ -144,7 +144,8 @@ class DatabaseManager {
     {
         if ( ! empty(app('installer')->config('upgrade.migrations'))) {
             try {
-                Artisan::call('migrate', ['--path' => $this->getMigrationPath()]);
+//                Artisan::call('migrate', ['--path' => $this->getMigrationPath()]);
+                Artisan::call('migrate');
             } catch (Exception $e) {
                 return $this->response($e->getMessage(), 'danger');
             }
